@@ -1,24 +1,27 @@
 Garmin_SD - Instinct 2
 ======================
 
-A trimmed-down copy of [Garmin_SD](https://github.com/OpenSeizureDetector/Garmin_SD)
-(the OpenSeizureDetector Connect IQ watch app), stripped to only what is
-needed to build and run for the **Instinct 2** device. See the original
-project for background, licensing (GPLv3, see LICENSE) and full history.
+This is a **fork** of [Garmin_SD](https://github.com/OpenSeizureDetector/Garmin_SD)
+(the OpenSeizureDetector Connect IQ watch app), adapted **as-is** to build and
+run on the **Instinct 2** device only. No functional changes were made beyond
+what was required to target this device (device-specific resources such as
+the launcher icon, and trimming unused build targets); all app logic and
+behaviour are unchanged from upstream. See the original project for
+background, features, licensing (GPLv3, see LICENSE) and full history.
 
 # Build
 
-Requires the Garmin Connect IQ SDK (installed via SDK Manager) with the
+Requires the Garmin Connect IQ SDK, version **8.1.1** (the version this
+project was built/tested against), installed via the
+[SDK Manager](https://developer.garmin.com/connect-iq/sdk/), with the
 Instinct 2 device definition installed, and a developer key
 (`developer_key` in this folder - not committed to git).
 
-```
-"<SDK>/bin/monkeyc.bat" -f monkey.jungle -d instinct2 -o GarminSD.prg -y developer_key -w
-```
+Open this folder in VS Code with the [Monkey C](https://marketplace.visualstudio.com/items?itemName=garmin.monkeyc)
+extension installed, then use "Monkey C: Build Current Project" from the
+command palette (or F5 to build and run in the simulator).
 
-# Run in the simulator
+# Install on the watch
 
-```
-"<SDK>/bin/connectiq.bat" &
-"<SDK>/bin/monkeydo.bat" GarminSD.prg instinct2
-```
+Connect the Instinct 2 to your computer via USB and copy the built
+`.prg` file to the `Garmin/Apps` folder on the device.
