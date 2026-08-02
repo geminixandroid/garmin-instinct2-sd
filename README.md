@@ -8,6 +8,12 @@ the launcher icon, and trimming unused build targets); all app logic and
 behaviour are unchanged from upstream. See the original project for
 background, features, licensing (GPLv3, see LICENSE) and full history.
 
+This watch app is not standalone — it requires the
+[OpenSeizureDetector companion app](https://play.google.com/store/apps/details?id=uk.org.openseizuredetector)
+running as the server it streams data to. See the
+[OpenSeizureDetector project](https://github.com/OpenSeizureDetector) for the
+full ecosystem (server, apps, and other watch integrations).
+
 # Build
 
 Requires the Garmin Connect IQ SDK, version **8.1.1** (the version this
