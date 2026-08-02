@@ -36,10 +36,11 @@ class GarminSDView extends Ui.View {
   var accelHandler as GarminSDDataHandler;
   var width as Number = 0;
   var halfWidth as Number = 0;
+  var quaterWidth as Number = 0;
+  var thirdWidth as Number = 0;
   var height as Number = 0;
   var mSdState as GarminSDState;
   var beatsPerMinuteAbbrev as String = "";
-  var batteryAbbrev as String = "";
   var muteLabel as String = "";
   var fontSizeClock as Gfx.FontDefinition = Gfx.FONT_SYSTEM_NUMBER_HOT;
   var fontHrO2Str as Gfx.FontDefinition = Gfx.FONT_SYSTEM_NUMBER_HOT;
@@ -59,7 +60,6 @@ class GarminSDView extends Ui.View {
     );
     //loading resources locally
     beatsPerMinuteAbbrev = Ui.loadResource(Rez.Strings.Beats_per_minute_abbrev).toString();
-    batteryAbbrev = Ui.loadResource(Rez.Strings.Battery_abbrev).toString();
     muteLabel = Ui.loadResource(Rez.Strings.Mute_label).toString();
     writeLog("GarminSDView.initialize()", "Complete");
   }
@@ -84,11 +84,13 @@ class GarminSDView extends Ui.View {
     //writeLog("GarminSDView.onLayout()", "");
     width = dc.getWidth();
     halfWidth = width/2;
+    thirdWidth = width/3;
+    quaterWidth = width/4;
     height = dc.getHeight();
     // Nominal height of display for positioning text - values are for a 240px high display.
     var heightScale = height / 240.0;
-    heightScaleLine1=heightScale*20;
-    heightScaleLine2=heightScale*45;
+    heightScaleLine1=heightScale*10;
+    heightScaleLine2=heightScale*40;
     heightScaleLine3=heightScale*120;
     heightScaleLine4=heightScale*150;
     heightScaleLine5=heightScale*180;
@@ -152,8 +154,7 @@ class GarminSDView extends Ui.View {
         ]);
     }
 
-    var hrBatStr = Lang.format("$1$: $2$%", [
-      batteryAbbrev,
+    var hrBatStr = Lang.format("$1$%", [
       sysStats.battery.format("%02.0f"),
     ]);
 
@@ -161,21 +162,14 @@ class GarminSDView extends Ui.View {
     dc.clear();
     dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
     dc.drawText(
-      halfWidth,
-      0,
-      Gfx.FONT_MEDIUM,
-      "OpenSeizure",
-      Gfx.TEXT_JUSTIFY_CENTER
-    );
-    dc.drawText(
-      halfWidth,
+      thirdWidth,
       heightScaleLine1,
-      Gfx.FONT_MEDIUM,
-      "Detector",
+      Gfx.FONT_XTINY,
+      "OSD",
       Gfx.TEXT_JUSTIFY_CENTER
     );
     dc.drawText(
-      halfWidth,
+      thirdWidth,
       heightScaleLine2,
       fontSizeClock,
       timeString,
@@ -189,8 +183,8 @@ class GarminSDView extends Ui.View {
       Gfx.TEXT_JUSTIFY_CENTER
     );
     dc.drawText(
-      halfWidth,
-      heightScaleLine4,
+      145,
+      18,
       fontHrO2Str,
       hrBatStr,
       Gfx.TEXT_JUSTIFY_CENTER
