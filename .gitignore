@@ -1,0 +1,10 @@
+*~
+*#
+*.prg
+*.prg.debug.xml
+developer_key
+bin/
+gen/
+mir/
+internal-mir/
+external-mir/
