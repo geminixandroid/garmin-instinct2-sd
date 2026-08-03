@@ -36,12 +36,16 @@ class GarminSDView extends Ui.View {
   var accelHandler as GarminSDDataHandler;
   var width as Number = 0;
   var halfWidth as Number = 0;
-  var quaterWidth as Number = 0;
   var thirdWidth as Number = 0;
   var height as Number = 0;
   var mSdState as GarminSDState;
   var beatsPerMinuteAbbrev as String = "";
+  var batteryAbbrev as String = "";
   var muteLabel as String = "";
+  // Instinct 2 (and other Instinct-shaped watches) use a semi-octagon display
+  // that is much smaller and squarer than most supported devices, so it gets
+  // its own compact layout instead of the default one below.
+  var isInstinctShape as Boolean = false;
   var fontSizeClock as Gfx.FontDefinition = Gfx.FONT_SYSTEM_NUMBER_HOT;
   var fontHrO2Str as Gfx.FontDefinition = Gfx.FONT_SYSTEM_NUMBER_HOT;
   var heightScaleLine1 as Float = 0.0;
@@ -85,12 +89,18 @@ class GarminSDView extends Ui.View {
     width = dc.getWidth();
     halfWidth = width/2;
     thirdWidth = width/3;
-    quaterWidth = width/4;
     height = dc.getHeight();
+    isInstinctShape = (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_SEMI_OCTAGON);
     // Nominal height of display for positioning text - values are for a 240px high display.
     var heightScale = height / 240.0;
-    heightScaleLine1=heightScale*10;
-    heightScaleLine2=heightScale*40;
+    if (isInstinctShape) {
+      heightScaleLine1=heightScale*10;
+      heightScaleLine2=heightScale*40;
+    }
+    else {
+      heightScaleLine1=heightScale*20;
+      heightScaleLine2=heightScale*45;
+    }
     heightScaleLine3=heightScale*120;
     heightScaleLine4=heightScale*150;
     heightScaleLine5=heightScale*180;
@@ -154,39 +164,78 @@ class GarminSDView extends Ui.View {
         ]);
     }
 
-    var hrBatStr = Lang.format("$1$%", [
-      sysStats.battery.format("%02.0f"),
-    ]);
-
     dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
     dc.clear();
     dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
-    dc.drawText(
-      thirdWidth,
-      heightScaleLine1,
-      Gfx.FONT_XTINY,
-      "OSD",
-      Gfx.TEXT_JUSTIFY_CENTER
-    );
-    dc.drawText(
-      thirdWidth,
-      heightScaleLine2,
-      fontSizeClock,
-      timeString,
-      Gfx.TEXT_JUSTIFY_CENTER
-    );
+    if (isInstinctShape) {
+      // Compact layout for Instinct 2's smaller, squarer display: a one-line
+      // "OSD" title and the clock share the left third of the screen, and the
+      // battery percentage moves to the top-right corner to free up space for
+      // the HR/O2 line below.
+      var hrBatStr = Lang.format("$1$%", [
+        sysStats.battery.format("%02.0f"),
+      ]);
+      dc.drawText(
+        thirdWidth,
+        heightScaleLine1,
+        Gfx.FONT_XTINY,
+        "OSD",
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+      dc.drawText(
+        thirdWidth,
+        heightScaleLine2,
+        fontSizeClock,
+        timeString,
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+      dc.drawText(
+        width*0.824,
+        height*0.10,
+        fontHrO2Str,
+        hrBatStr,
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+    }
+    else {
+      var hrBatStr = Lang.format("$1$: $2$%", [
+        batteryAbbrev,
+        sysStats.battery.format("%02.0f"),
+      ]);
+      dc.drawText(
+        halfWidth,
+        0,
+        Gfx.FONT_MEDIUM,
+        "OpenSeizure",
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+      dc.drawText(
+        halfWidth,
+        heightScaleLine1,
+        Gfx.FONT_MEDIUM,
+        "Detector",
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+      dc.drawText(
+        halfWidth,
+        heightScaleLine2,
+        fontSizeClock,
+        timeString,
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+      dc.drawText(
+        halfWidth,
+        heightScaleLine4,
+        fontHrO2Str,
+        hrBatStr,
+        Gfx.TEXT_JUSTIFY_CENTER
+      );
+    }
     dc.drawText(
       halfWidth,
       heightScaleLine3,
       fontHrO2Str,
       hrO2Str,
-      Gfx.TEXT_JUSTIFY_CENTER
-    );
-    dc.drawText(
-      145,
-      18,
-      fontHrO2Str,
-      hrBatStr,
       Gfx.TEXT_JUSTIFY_CENTER
     );
     if (accelHandler.mMute) {
