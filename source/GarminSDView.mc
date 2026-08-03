@@ -64,6 +64,7 @@ class GarminSDView extends Ui.View {
     );
     //loading resources locally
     beatsPerMinuteAbbrev = Ui.loadResource(Rez.Strings.Beats_per_minute_abbrev).toString();
+    batteryAbbrev = Ui.loadResource(Rez.Strings.Battery_abbrev).toString();
     muteLabel = Ui.loadResource(Rez.Strings.Mute_label).toString();
     writeLog("GarminSDView.initialize()", "Complete");
   }
